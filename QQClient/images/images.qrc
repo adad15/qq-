@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>blue1.gif</file>
+        <file>dt1.gif</file>
+        <file>tb1.png</file>
+        <file>tb2.png</file>
+        <file>down.png</file>
+        <file>down-focus.png</file>
+        <file>A26.png</file>
+        <file>bold.png</file>
+        <file>clear.png</file>
+        <file>color.png</file>
+        <file>italic.png</file>
+        <file>under.png</file>
+        <file>save.png</file>
+    </qresource>
+</RCC>
