@@ -42,9 +42,13 @@ public:
     QToolButton *tBbc;
     QToolButton *tBqc;
     QTextEdit *tEsend;
-    QPushButton *pBsend;
     QLabel *labelnumber;
     QTableWidget *tWlist;
+    QWidget *widget;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *pBsend;
+    QPushButton *pBseclet;
+    QPushButton *pBsendfile;
 
     void setupUi(QWidget *widgetclint)
     {
@@ -140,19 +144,46 @@ public:
         tEsend = new QTextEdit(widgetclint);
         tEsend->setObjectName("tEsend");
         tEsend->setGeometry(QRect(20, 300, 401, 111));
-        pBsend = new QPushButton(widgetclint);
-        pBsend->setObjectName("pBsend");
-        pBsend->setGeometry(QRect(20, 420, 91, 23));
         labelnumber = new QLabel(widgetclint);
         labelnumber->setObjectName("labelnumber");
         labelnumber->setGeometry(QRect(610, 430, 81, 16));
         tWlist = new QTableWidget(widgetclint);
-        if (tWlist->columnCount() < 1)
-            tWlist->setColumnCount(1);
+        if (tWlist->columnCount() < 2)
+            tWlist->setColumnCount(2);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tWlist->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tWlist->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        if (tWlist->rowCount() < 2)
+            tWlist->setRowCount(2);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tWlist->setVerticalHeaderItem(0, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tWlist->setVerticalHeaderItem(1, __qtablewidgetitem3);
         tWlist->setObjectName("tWlist");
         tWlist->setGeometry(QRect(430, 30, 261, 381));
+        widget = new QWidget(widgetclint);
+        widget->setObjectName("widget");
+        widget->setGeometry(QRect(20, 420, 401, 25));
+        horizontalLayout_2 = new QHBoxLayout(widget);
+        horizontalLayout_2->setSpacing(60);
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        pBsend = new QPushButton(widget);
+        pBsend->setObjectName("pBsend");
+
+        horizontalLayout_2->addWidget(pBsend);
+
+        pBseclet = new QPushButton(widget);
+        pBseclet->setObjectName("pBseclet");
+
+        horizontalLayout_2->addWidget(pBseclet);
+
+        pBsendfile = new QPushButton(widget);
+        pBsendfile->setObjectName("pBsendfile");
+
+        horizontalLayout_2->addWidget(pBsendfile);
+
 
         retranslateUi(widgetclint);
 
@@ -196,10 +227,16 @@ public:
         tBqc->setToolTip(QCoreApplication::translate("widgetclint", "\346\270\205\351\231\244", nullptr));
 #endif // QT_CONFIG(tooltip)
         tBqc->setText(QCoreApplication::translate("widgetclint", "...", nullptr));
-        pBsend->setText(QCoreApplication::translate("widgetclint", "\345\217\221\351\200\201", nullptr));
         labelnumber->setText(QCoreApplication::translate("widgetclint", "\345\234\250\347\272\277\344\272\272\346\225\260:0\344\272\272", nullptr));
         QTableWidgetItem *___qtablewidgetitem = tWlist->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QCoreApplication::translate("widgetclint", "\347\224\250\346\210\267\345\220\215:", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = tWlist->verticalHeaderItem(0);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("widgetclint", "\347\224\250\346\210\2671", nullptr));
+        QTableWidgetItem *___qtablewidgetitem2 = tWlist->verticalHeaderItem(1);
+        ___qtablewidgetitem2->setText(QCoreApplication::translate("widgetclint", "\347\224\250\346\210\2672", nullptr));
+        pBsend->setText(QCoreApplication::translate("widgetclint", "\345\217\221\351\200\201", nullptr));
+        pBseclet->setText(QCoreApplication::translate("widgetclint", "\351\200\211\346\213\251\346\226\207\344\273\266", nullptr));
+        pBsendfile->setText(QCoreApplication::translate("widgetclint", "\345\217\221\351\200\201\346\226\207\344\273\266", nullptr));
     } // retranslateUi
 
 };

@@ -6,6 +6,8 @@
 #include <QPoint>
 #include <QMouseEvent>
 #include <QByteArray>
+#include <QFile>
+#include <QFileInfo>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,10 +29,23 @@ public:
     QString sMsg();
     QByteArray sMsg2();
     QByteArray Msg3;
+    QString fileName;
+    qint64 fileSize;
+    qint64 sendSize;
+    QFile file;
+    QFile file2;
+    bool isMsg{false};
+    bool isFile{false};
+    bool isstart{false};
+    QString recfileName;
+    qint64 recfileSize;
+    qint64 recsendSize;
+
 signals:
     void closesocket();
     void setmsg();
     void beginchat2();
+    void sedFile();
 
 protected:
     void mouseMoveEvent(QMouseEvent* event);
@@ -38,6 +53,10 @@ protected:
 private slots:
     void on_pBclose_clicked();
     void on_pBsend_clicked();
+
+    void on_pBseclet_clicked();
+
+    void on_pBsendfile_clicked();
 
 private:
     Ui::widgetclint *ui;

@@ -15,6 +15,8 @@ widgetclint::widgetclint(QWidget *parent)
     //固定窗口大小
     setFixedSize(width(),height());
 
+    ui->pBsendfile->setEnabled(false);
+
     //信号和槽的参数要匹配,设置窗口文本字体
     connect(ui->fontComboBox,&QFontComboBox::currentFontChanged,[=](const QFont &font){
         QTextCharFormat fmt;//文本字符格式
@@ -80,6 +82,7 @@ widgetclint::widgetclint(QWidget *parent)
     connect(this,&widgetclint::beginchat2,[=](){
         QString msg=Msg3;
         QStringList a = msg.split("`");
+
         QString b=a.at(0);
         QString c=a.at(1);
         ui->tEchat->insertPlainText(b);
@@ -87,7 +90,7 @@ widgetclint::widgetclint(QWidget *parent)
         ui->tEchat->append(c);
         ui->tEchat->append("");
         qDebug()<<"555555555555555";
-        qDebug()<<c;
+        qDebug()<<msg;
         qDebug()<<"555555555555555";
         qDebug()<<ui->tEchat->toPlainText();
         Msg3.clear();
@@ -148,3 +151,38 @@ void widgetclint::on_pBsend_clicked()
     emit setmsg();
     Msg.clear();
 }
+
+void widgetclint::on_pBseclet_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this,"open","../");
+
+    if(filePath.isEmpty()==false){
+        //获取文件信息QFileInfo
+        QFileInfo info(filePath);
+
+        fileName = info.fileName();
+        fileSize = info.size();
+        sendSize = 0;
+
+        //打开文件为只读
+        file.setFileName(filePath);
+
+        bool isOk = file.open(QIODevice::ReadOnly);
+        if(isOk==false){
+            qDebug()<<"文件未成功打开";
+        }
+
+        ui->pBseclet->setEnabled(false);
+        ui->pBsendfile->setEnabled(true);
+    }else{
+        qDebug()<<"文件夹选择失败 57";
+    }
+
+}
+
+
+void widgetclint::on_pBsendfile_clicked()
+{
+    emit sedFile();
+}
+

@@ -50,10 +50,27 @@ Widget::Widget(QWidget *parent)
 
     //发送数据
     connect(secondwight,&widgetclint::setmsg,[=](){
+        secondwight->isMsg=true;
+        QByteArray msg=this->secondwight->sMsg().toUtf8();
         qDebug()<<"1111111111";
         qDebug()<<"connect成功";
         qDebug()<<"1111111111";
-        mTcp->write(this->secondwight->sMsg().toUtf8().data());
+        qint64 len{};
+        //while(len < sizeof(msg.data())){
+        while(len < msg.size()){
+            qint64 ret = mTcp->write(msg.data()+len,msg.size()-len);
+            if(ret == -1){
+                QMessageBox::information(this,"失败","发送数据失败。");
+                break;
+            }
+            if(ret==0){
+                QMessageBox::information(this,"失败","缓冲区满了");
+            }
+            len += ret;
+            qDebug()<<"999999999999999999";
+            qDebug()<<len;
+            qDebug()<<"999999999999999999";
+        }
         qDebug()<<"2222222222222";
         qDebug()<<this->secondwight->sMsg().toUtf8().data();
         qDebug()<<"2222222222222";
@@ -62,18 +79,88 @@ Widget::Widget(QWidget *parent)
     connect(this,&Widget::beginchat,secondwight,&widgetclint::beginchat2);
     //接受数据
     connect(mTcp,&QTcpSocket::readyRead,[=](){
-        QByteArray array = mTcp->readAll();
-        qDebug()<<"33333333333333333";
-        qDebug()<<array;
-        qDebug()<<"33333333333333333";
-        secondwight->sMsg2()=array;
-        secondwight->Msg3=array;
-        qDebug()<<"44444444444444";
-        qDebug()<<secondwight->sMsg2();
-        qDebug()<<"444444444444444";
-        qDebug()<<secondwight->Msg3;
-        qDebug()<<"444444444444444";
-        emit beginchat();
+        if(secondwight->isMsg){
+            QByteArray array = mTcp->readAll();
+            qDebug()<<"33333333333333333";
+            //qDebug()<<array;
+            qDebug()<<"33333333333333333";
+            secondwight->sMsg2()=array;
+            secondwight->Msg3=array;
+            //qDebug()<<"44444444444444";
+            //qDebug()<<secondwight->sMsg2();
+            qDebug()<<"444444444444444";
+            //qDebug()<<secondwight->Msg3;
+            qDebug()<<"444444444444444";
+            array.clear();
+            emit beginchat();
+            secondwight->isMsg = false;
+        }
+        if(secondwight->isFile){
+            QByteArray array = mTcp->readAll();
+            if(secondwight->isstart){
+                qDebug()<<"66666666666666666666667777777777777777777";
+                secondwight->isstart = false;
+                secondwight->recfileName = QString(array).section("##",0,0);
+                secondwight->recfileSize = QString(array).section("##",1,1).toInt();
+
+                secondwight->recsendSize = 0;
+
+                secondwight->file2.setFileName(secondwight->recfileName);
+
+                bool isok = secondwight->file2.open(QIODevice::Append);
+                if(isok==false){
+                    qDebug()<<"文件打开失败";
+                }
+            }else {
+                qDebug()<<"7777777777777777777777777777777777777";
+                qint64 len = secondwight->file2.write(array);
+                secondwight->recsendSize +=len;
+                //secondwight->file2.flush();
+                if(secondwight->recsendSize==secondwight->recfileSize){
+                    QMessageBox::information(secondwight,"完成","文件已经全部接受完成");
+                    secondwight->file2.close();
+                    secondwight->isFile = false;
+                }
+            }
+
+        }
+    });
+
+    connect(&myTimer,&QTimer::timeout,[=](){
+        myTimer.stop();
+        //secondwight->isFile = true;
+        qint64 len = 0;
+        char buf[4*1024]{};
+        do{
+           len = secondwight->file.read(buf,sizeof(buf));
+           len = mTcp->write(buf,len);
+           secondwight->sendSize+=len;
+        }while(len>0);
+        //为什么放在下面需要再点击一次按钮？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+        if(secondwight->sendSize==secondwight->fileSize){
+            QMessageBox::information(secondwight,"完毕","文件已全部发送完毕");
+
+            secondwight->file.close();
+        }
+    });
+
+    //发送文件
+    connect(secondwight,&widgetclint::sedFile,[=](){
+        secondwight->isFile = true;
+        QString str = QString("%1##%2").arg(secondwight->fileName).arg(secondwight->fileSize);
+        secondwight->isstart = true;
+        qint64 len = mTcp->write(str.toUtf8().data());
+
+        if(len>0){
+            //距离太近会产生粘包
+            //用定时器解决问题
+            myTimer.start(40);//间隔20毫秒触发信号
+
+        }else{
+            qDebug()<<"发送文件失败";
+            secondwight->file.close();
+        }
+        //secondwight->file.flush();
     });
 
 

@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QTcpSocket>
 #include "widgetclint.h"
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -50,5 +51,6 @@ private:
     QTcpSocket* mTcp;
     bool ifconnect;
     bool ifclose;
+    QTimer myTimer;
 };
 #endif // WIDGET_H
